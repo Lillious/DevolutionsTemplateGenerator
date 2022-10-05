@@ -26,11 +26,11 @@ function generateAll() {
 }
 
 // Export Information
-const Title = 'name, username, password, group'
+const Title = 'name, username, password, group';
 var data = [];
 
 function generateCSV (username, password, group) {
-    data.push([`${username},${username},${password},${group}`]);
+    data.push([`"${username}","${username}","${password}","${group}"`]);
 }
 
 function downloadFile (filename, text) {
@@ -59,14 +59,14 @@ exportbutton.addEventListener("click", function() {
         let username = string.split("/")[1];
         let password = document.getElementById(`password-${i}`).value;
         if (typeof username == 'string' && typeof password == 'string' && typeof group == 'string') {
-            generateCSV(username.toLowerCase().replaceAll(',', ''), password.replaceAll(',', ''), group.replaceAll(',', ''));
+            generateCSV(username.toLowerCase(), password, group);
         } else {
             console.error(`Error: Username, Password or Group is not a string at index ${i}`);
         }
     }
     data.unshift([Title]);
     var report = data.map(function(d){
-        return d.join('&');
+        return d.join(',');
     }).join('\n').replace(/(^\[)|(\]$)/mg, '');
     downloadFile(`Devolutions-Report-${formatDate()}.csv`, report);
     data = [];
