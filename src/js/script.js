@@ -30,7 +30,9 @@ function generateAll() {
     if (length < 8) return alert("The minimum password length is 8 characters");
     const passwords = document.getElementsByClassName('password');
     for (let i = 1; i < passwords.length +1; i++) {
-        document.getElementById(`password-${i}`).value = generate();
+        if (document.getElementById(`password-${i}`).value == "") {
+            document.getElementById(`password-${i}`).value = generate();
+        }
     }
 }
 
