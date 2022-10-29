@@ -118,8 +118,8 @@ document.getElementById('export').addEventListener('click', () => {
         return d.join(',');
     }).join('\n').replace(/(^\[)|(\]$)/mg, '');
     downloadFile(`Devolutions-Report-${formatDate()}.csv`, report);
-    return showToast('success', 'Report exported successfully');
     data = [];
+    return showToast('success', 'Report exported successfully');
 });
 
 function addEntry() {
