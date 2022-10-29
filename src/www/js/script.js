@@ -207,7 +207,7 @@ function generate() {
         password = shuffle(password);
     }
 
-    const sanitized = password.toString().replaceAll(',', '');
+    const sanitized = password.toString().replace(/,/g, '');
     return sanitized;
 }
 
