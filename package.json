@@ -1,8 +1,9 @@
 {
-  "name": "devolutions-template-generator",
+  "name": "devolutionstemplategenerator",
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
+  "type": "commonjs",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "electron ."
@@ -11,6 +12,10 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^21.1.0"
+    "electron": "^6.1.12",
+    "electron-packager": "^15.4.0"
+  },
+  "dependencies": {
+    "node-clipboardy": "^1.0.3"
   }
 }

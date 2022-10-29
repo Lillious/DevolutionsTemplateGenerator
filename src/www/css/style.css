@@ -1,0 +1,390 @@
+::-webkit-scrollbar {
+  background: transparent;
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #3f78c4;
+  border-radius: 5px;
+}
+::-webkit-scrollbar-thumb:hover {
+  border-radius: 5px;
+}
+::-webkit-scrollbar-thumb:active {
+  background: #3f78c4;
+}
+input {
+    color-scheme: dark;
+}
+::-webkit-calendar-picker-indicator {
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="15" viewBox="0 0 24 24"><path fill="%23bbbbbb" d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 18H4V8h16v13z"/></svg>');
+    cursor: pointer;
+}
+
+@font-face {
+    font-family: RooneySans;
+    src: url(../fonts/RooneySans.ttf);
+}
+
+::placeholder {
+    font-style: italic;
+    font-size: 14px;
+}
+
+body {
+    background: #161b22;
+    color: #212121;
+    font-family: RooneySans;
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 0;
+    user-select: none;
+}
+
+button {
+    cursor: pointer;
+}
+
+/* titlebar */
+
+#titlebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+    height: 35px;
+    max-height: 35px;
+    /* Make titlebar draggable */
+    -webkit-app-region: drag;
+    user-select: none;
+}
+
+/* Titlebar Buttons */
+
+#titlebar #icons button {
+    /* Remove the dragging ability from titlebar buttons */
+    -webkit-app-region: no-drag;
+    /* Circlular Apple-like button design */
+    border-radius: 50%;
+    width: 17px;
+    height: 17px;
+    padding: 2px;
+    font-size: 8px;
+    /* Button spacing */
+    margin-right: 5px;
+    font-weight: bold;
+}
+
+#titlebar #icons {
+    /* Changes the side and order that the titlebar buttons are in */
+    float: right;
+    /* float: left; */
+}
+
+#titlebar .container #title {
+    /* Changes the side that the titlebar title is on */
+    float: left;
+    /* float: right; */
+}
+
+/* Coloring */
+
+.light {
+    background: #fff;
+    color: #000;
+}
+
+.dark {
+    background: #0a0d12;
+    color: #c7cfd7;
+}
+
+/* Begin button coloring */
+
+.red {
+    background: #ed6a5e;
+    color: transparent;
+    border: 1px solid #8a3d36;
+    transition: 0.1s;
+}
+
+.red:hover {
+    color: #8a3d36;
+    transition: 0.1s;
+}
+
+.green {
+    background: #61c555;
+    color: transparent;
+    border: 1px solid #2a5424;
+    transition: 0.1s;
+}
+
+.green:hover {
+    color: #2a5424;
+    transition: 0.1s;
+}
+
+.yellow {
+    background: #f4c04e;
+    color: transparent;
+    border: 1px solid #695323;
+    transition: 0.1s;
+}
+
+.yellow:hover {
+    color: #695323;
+    transition: 0.1s;
+}
+
+/* End button coloring */
+
+/* Page Content */
+
+#content {
+    position: fixed;
+    top: 40px;
+    left: 5px;
+    right: 5px;
+    bottom: 0;
+    overflow-y: scroll;
+}
+
+.container {
+    padding: 8px;
+}
+
+/* End General Styling */
+
+.text-align-center {
+    text-align: center;
+}
+
+.text-align-left {
+    text-align: left;
+}
+
+.text-align-right {
+    text-align: right;
+}
+
+.float-right {
+    float: right;
+}
+
+.float-left {
+    float: left;
+}
+
+.center {
+    display: flex;
+    justify-content: center;
+}
+
+/* End General Styling */
+
+/* Scroll Box Styling */
+
+.scroll-box {
+    overflow-y: scroll;
+    margin-top: 10px;
+    max-height: 286px;
+    margin-left: -10px;
+    margin-right: -10px;
+}
+
+.scroll-box .scroll-box-content {
+    padding: 5px;
+}
+
+.card {
+    background: #0d1117;
+    border: 1px solid #22282e;
+    padding: 25px;
+    border-radius: 8px;
+    overflow: hidden;
+    max-height: 0px;
+    margin-bottom: 10px;
+}
+
+.card .card-header {
+    color: #c7cfd7;
+    margin-top: -18px;
+    margin-left: -10px;
+    font-size: 24px;
+}
+
+.card .card-content {
+    color: #7d7e78;
+    font-size: 16px;
+}
+
+.card button {
+    padding: 8px;
+    background: #21262d;
+    border: 1px solid #2a3038;
+    border-radius: 5px;
+    color: #3f78c4;
+    font-weight: 500;
+}
+
+.card button:hover {
+    background: #2b313b;
+    border: 1px solid #343b45;
+    color: #4b93f2;
+}
+
+.card button:active {
+    background: #3f78c4;
+    border: 1px solid #3b7dd4;
+    color: #c7cfd7;
+}
+
+.notification-bar {
+    position: fixed;
+    display: none;
+    right: 10px;
+    bottom: 0px;
+    background: #0d1117;
+    margin-bottom: 10px;
+    border: 1px solid #238636;
+    border-radius: 8px;
+    height: 35px;
+}
+
+.notification-bar .notification-content {
+    color: #238636;
+    padding: 8px;
+    margin-right: 25px;
+    margin-left: 5px;
+}
+
+.notification-bar .notification-close {
+    color: #c7cfd7;
+    position: absolute;
+    padding: 8px;
+    right: 5px;
+    user-select: none;
+}
+
+.notification-bar .notification-close:hover {
+    color: #ed6a5e;
+    cursor: pointer;
+}
+
+.card .card-mode {
+    float: right;
+    margin-top: -20px;
+    margin-right: -10px;
+    color: #c7cfd7;
+    user-select: none;
+    font-size: 26px;
+}
+
+.card .card-mode:hover {
+    color: #4b93f2;
+    cursor: pointer;
+}
+
+input {
+    background: #0d1117;
+    border: 1px solid #22282e;
+    border-radius: 5px;
+    color: #c7cfd7;
+    padding: 8px;
+    font-size: 16px;
+    outline: none;
+}
+
+input {
+    width: 200px;
+    margin-left: -2px;
+}
+
+input:focus {
+    border: 1px solid #3f78c4;
+}
+
+.entry .username, .entry .password {
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.entry p {
+    font-size: 16px;
+    font-weight: 600;
+    color: #c7cfd7;
+}
+
+.card .card-footer {
+    margin-bottom: -25px;
+    margin-left: -25px;
+    margin-right: -25px;
+    padding: 8px;
+}
+
+.card .card-footer button {
+    margin-right: 5px;
+    user-select: none;
+    width: 100px;
+}
+
+a {
+    color: #3f78c4;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+#version {
+    position: absolute;
+    bottom: 16px;
+    left: 10px;
+    color: #c7cfd7;
+}
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black;
+  }
+  
+  .tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -60px;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  
+  .tooltip .tooltiptext::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
+  }
+  
+  .tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+  }
