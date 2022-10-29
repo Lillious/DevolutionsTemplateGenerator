@@ -297,7 +297,6 @@ input {
     color: #c7cfd7;
     padding: 8px;
     font-size: 16px;
-    outline: none;
 }
 
 input {
@@ -387,4 +386,8 @@ a:hover {
   .tooltip:hover .tooltiptext {
     visibility: visible;
     opacity: 1;
+  }
+
+  input, button {
+    outline: none;
   }
