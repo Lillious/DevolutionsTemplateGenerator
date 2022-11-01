@@ -79,7 +79,7 @@ function validateDate(date)
 
 function reformatDate (date) {
     let parts = date.split('-');
-    return `${parts[0], parts[1], parts[2]}`;
+    return `${parts[0]}-${parts[1]}-${parts[2]}`;
 }
 
 document.getElementById('export').addEventListener('click', () => {
