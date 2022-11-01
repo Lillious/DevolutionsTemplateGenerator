@@ -77,6 +77,11 @@ function validateDate(date)
     return true;
 }
 
+function reformatDate (date) {
+    let parts = date.split('-');
+    return `${parts[0], parts[1], parts[2]}`;
+}
+
 document.getElementById('export').addEventListener('click', () => {
     const usernames = document.getElementsByClassName('username');
     if (usernames.length === 0) return showToast('error', 'No entries to export');
@@ -87,7 +92,7 @@ document.getElementById('export').addEventListener('click', () => {
         let munisVersion = document.getElementsByClassName(`munis-version`)[0].getElementsByTagName('input')[0].value;
         let engagementType = document.getElementsByClassName(`engagement-type`)[0].getElementsByTagName('input')[0].value;
         let engagementDate = document.getElementsByClassName(`engagement-date`)[0].getElementsByTagName('input')[0].value;
-        let group = `${siteName} - ${accountNumber}\\${engagementType} - Munis ${munisVersion} - ${engagementDate}\\${string.split("/")[0]}`;
+        let group = `${siteName} - ${accountNumber}\\Munis ${munisVersion} ${engagementType} - ${reformatDate(engagementDate)}\\${string.split("/")[0]}`;
         let username = string.split("/")[1];
         let usergroup = string.split("/")[0];
         let hiddenpassword = document.getElementById(`password-${i}`);
