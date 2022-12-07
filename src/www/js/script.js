@@ -23,9 +23,62 @@ maximize.addEventListener('click', () => {
     ipcRenderer.send('maximize');
 });
 
+const save = document.getElementById('save');
+save.addEventListener('click', () => {
+    const Accounts = [];
+    const SiteInformation = [];
+    let usernames = document.getElementsByClassName('username-input');
+    let passwords = document.getElementsByClassName('password-input');
+    for (let i = 0; i < count; i++) {
+        let username = usernames[i].value;
+        let password = passwords[i].value;
+        Accounts.push({[username]: `${password}`});
+    }
+    let siteName = document.getElementsByClassName(`site-name`)[0].getElementsByTagName('input')[0].value || '';
+    let accountNumber = document.getElementsByClassName(`account-number`)[0].getElementsByTagName('input')[0].value || '';
+    let munisVersion = document.getElementsByClassName(`munis-version`)[0].getElementsByTagName('input')[0].value || '';
+    let engagementType = document.getElementsByClassName(`engagement-type`)[0].getElementsByTagName('input')[0].value || '';
+    let engagementDate = document.getElementsByClassName(`engagement-date`)[0].getElementsByTagName('input')[0].value || '';
+    SiteInformation.push({Name: `${siteName}`, Account_Number: `${accountNumber}`, Munis_Version: `${munisVersion}`, Engagement_Type: `${engagementType}`, Engagement_Date: `${engagementDate}`});
+    ipcRenderer.send('save', Accounts, SiteInformation);
+});
+
+// Autosave every 30 seconds
+setInterval(() => {
+    save.click();
+}, 30000);
+
 document.getElementsByClassName('notification-close')[0].addEventListener('click', () => {
     document.getElementsByClassName('notification-bar')[0].style.display = 'none';
 });
+
+// Load entries from config file
+fetch('../www/config.json')
+.then(response => response.json())
+.then(data => {
+    let Accounts = data.Accounts;
+    let SiteInformation = data.Site_Information;
+    for (let i = 0; i < Accounts.length; i++) {
+        addEntry();
+        let username = Object.keys(Accounts[i])[0];
+        let password = Accounts[i][username];
+        document.getElementsByClassName('username-input')[i].value = username;
+        document.getElementsByClassName('password-input')[i].value = password;
+    }
+    // Load site information from config file
+    document.getElementsByClassName(`site-name`)[0].getElementsByTagName('input')[0].value = SiteInformation[0].Name;
+    document.getElementsByClassName(`account-number`)[0].getElementsByTagName('input')[0].value = SiteInformation[0].Account_Number;
+    document.getElementsByClassName(`munis-version`)[0].getElementsByTagName('input')[0].value = SiteInformation[0].Munis_Version;
+    document.getElementsByClassName(`engagement-type`)[0].getElementsByTagName('input')[0].value = SiteInformation[0].Engagement_Type;
+    document.getElementsByClassName(`engagement-date`)[0].getElementsByTagName('input')[0].value = SiteInformation[0].Engagement_Date;
+});
+
+// Clear config file
+document.getElementById('clear').addEventListener('click', () => {
+    ipcRenderer.send('clear');
+    location.reload();
+});
+    
 
 const cards = document.getElementsByClassName('card-mode');
 

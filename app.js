@@ -1,5 +1,37 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
+const { exec } = require('child_process');
+const nconf = require('nconf');
 const crash = (err) => { console.error(`\x1b[31m${err}\x1b[0m`); process.exit(1); };
+// Check if config file exists
+if (!require('fs').existsSync(`${__dirname}/src/www/config.json`)) {
+    // Create config file with empty object
+    require('fs').writeFileSync(`${__dirname}/src/www/config.json`, '{}');
+}
+
+ipcMain.on('save', (event, Accounts, SiteInformation) => {
+    nconf.use('file', { file: `${__dirname}/src/www/config.json` });
+    nconf.load();
+    if (Accounts) {
+        nconf.set('Accounts', Accounts);
+    }
+    if (SiteInformation) {
+        nconf.set('Site_Information', SiteInformation);
+    }
+    nconf.save((err) => {
+        if (err) { crash(err); }
+    });
+});
+
+ipcMain.on('clear', (event) => {
+    nconf.use('file', { file: `${__dirname}/src/www/config.json` });
+    nconf.load();
+    nconf.set('Accounts', {});
+    nconf.set('Site_Information', {});
+    nconf.save((err) => {
+        if (err) { crash(err); }
+    });
+});
+
 const createWindow = () => {
     const win = new BrowserWindow({
         width: 650,

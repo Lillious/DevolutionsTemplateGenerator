@@ -231,6 +231,7 @@ button {
 }
 
 .card button {
+    width: 100px;
     padding: 8px;
     background: #21262d;
     border: 1px solid #2a3038;
@@ -362,7 +363,7 @@ a:hover {
     border-bottom: 1px dotted black;
   }
   
-  .tooltip .tooltiptext {
+.tooltip .tooltiptext {
     visibility: hidden;
     width: 120px;
     background-color: #555;
@@ -377,9 +378,9 @@ a:hover {
     margin-left: -60px;
     opacity: 0;
     transition: opacity 0.3s;
-  }
+}
   
-  .tooltip .tooltiptext::after {
+.tooltip .tooltiptext::after {
     content: "";
     position: absolute;
     top: 100%;
@@ -388,13 +389,42 @@ a:hover {
     border-width: 5px;
     border-style: solid;
     border-color: #555 transparent transparent transparent;
-  }
+}
   
-  .tooltip:hover .tooltiptext {
+.tooltip:hover .tooltiptext {
     visibility: visible;
     opacity: 1;
-  }
+}
 
-  input, button {
+input, button {
     outline: none;
-  }
+}
+
+.footer-button {
+    position: absolute;
+    bottom: 10px;
+    right: 0;
+}
+
+.footer-button button {
+    width: 100px;
+    padding: 8px;
+    background: #21262d;
+    border: 1px solid #2a3038;
+    border-radius: 5px;
+    color: #3f78c4;
+    font-weight: 500;
+    margin-left: 10px;
+}
+
+.footer-button button:hover {
+    background: #2b313b;
+    border: 1px solid #343b45;
+    color: #4b93f2;
+}
+
+.footer-button button:active {
+    background: #3f78c4;
+    border: 1px solid #3b7dd4;
+    color: #c7cfd7;
+}

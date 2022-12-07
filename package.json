@@ -1,6 +1,6 @@
 {
   "name": "devolutionstemplategenerator",
-  "version": "1.0.0",
+  "version": "2.0.3",
   "description": "",
   "main": "app.js",
   "type": "commonjs",
@@ -16,6 +16,7 @@
     "electron-packager": "^17.0.0"
   },
   "dependencies": {
+    "nconf": "^0.12.0",
     "node-clipboardy": "^1.0.3"
   }
 }
