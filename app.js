@@ -36,7 +36,7 @@ const createWindow = () => {
     const win = new BrowserWindow({
         width: 650,
         minWidth: 600,
-        height: 873,
+        height: 950,
         minHeight: 400,
         frame: false,
         darkTheme: true,

@@ -7,10 +7,6 @@
 }
 ::-webkit-scrollbar-thumb {
   background: #3f78c4;
-  border-radius: 5px;
-}
-::-webkit-scrollbar-thumb:hover {
-  border-radius: 5px;
 }
 ::-webkit-scrollbar-thumb:active {
   background: #3f78c4;
@@ -76,7 +72,6 @@ button {
     /* Remove the dragging ability from titlebar buttons */
     -webkit-app-region: no-drag;
     /* Circlular Apple-like button design */
-    border-radius: 50%;
     width: 17px;
     height: 17px;
     padding: 2px;
@@ -208,11 +203,72 @@ button {
     padding: 5px;
 }
 
+#areyousure-container {
+    position: absolute;
+    z-index: 1000;
+    top: 25%;
+    left: 20%;
+    right: 20%;
+    display: none;
+}
+
+#areyousure {
+    background: #0d1117;
+    border: 1px solid #22282e;
+    padding: 25px;
+    margin-left: 10px;
+    margin-bottom: 10px;
+}
+
+#areyousure p {
+    text-align: center;
+    color: #4b93f2;
+}
+
+#areyousure button {
+    display: inline-flex;
+    justify-content: center;
+    width: 100px;
+    padding: 8px;
+    background: #21262d;
+    border: 1px solid #2a3038;
+    color: #3f78c4;
+    font-weight: 500;
+    text-align: center;
+}
+
+#areyousure-yes {
+    float: right;
+}
+
+#areyousure button:hover {
+    background: #2b313b;
+    border: 1px solid #343b45;
+    color: #4b93f2;
+}
+
+#areyousure button:active, #areyousure button:focus {
+    background: #3f78c4;
+    border: 1px solid #3b7dd4;
+    color: #c7cfd7;
+}
+
+#opacity {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 999;
+    display: none;
+}
+
 .card {
     background: #0d1117;
     border: 1px solid #22282e;
     padding: 25px;
-    border-radius: 8px;
+    margin-left: 10px;
     overflow: hidden;
     max-height: 0px;
     margin-bottom: 10px;
@@ -235,7 +291,6 @@ button {
     padding: 8px;
     background: #21262d;
     border: 1px solid #2a3038;
-    border-radius: 5px;
     color: #3f78c4;
     font-weight: 500;
 }
@@ -255,17 +310,15 @@ button {
 .notification-bar {
     position: fixed;
     display: none;
-    right: 10px;
-    bottom: 0px;
-    background: #0d1117;
-    margin-bottom: 10px;
-    border: 1px solid #238636;
-    border-radius: 8px;
+    right: 25px;
+    top: 55px;
+    background: rgba(0, 0, 0, 0.2);
+    border-right: 4px solid #238636;
     height: 35px;
 }
 
 .notification-bar .notification-content {
-    color: #238636;
+    color: #c7cfd7;
     padding: 8px;
     margin-right: 25px;
     margin-left: 5px;
@@ -301,7 +354,6 @@ button {
 input {
     background: #0d1117;
     border: 1px solid #22282e;
-    border-radius: 5px;
     color: #c7cfd7;
     padding: 8px;
     font-size: 16px;
@@ -351,10 +403,13 @@ a:hover {
 }
 
 #version {
-    position: absolute;
-    bottom: 16px;
-    left: 10px;
+    position: fixed;
+    left: 25px;
+    top: 55px;
+    padding: 8px;
     color: #c7cfd7;
+    background-color: rgba(0, 0, 0, 0.2);
+    border-left: 4px solid #d6c315;
 }
 
 .tooltip {
@@ -369,7 +424,6 @@ a:hover {
     background-color: #555;
     color: #fff;
     text-align: center;
-    border-radius: 6px;
     padding: 5px 0;
     position: absolute;
     z-index: 1;
@@ -403,7 +457,7 @@ input, button {
 .footer-button {
     position: absolute;
     bottom: 10px;
-    right: 0;
+    right: 0px;
 }
 
 .footer-button button {
@@ -411,7 +465,6 @@ input, button {
     padding: 8px;
     background: #21262d;
     border: 1px solid #2a3038;
-    border-radius: 5px;
     color: #3f78c4;
     font-weight: 500;
     margin-left: 10px;
@@ -428,3 +481,4 @@ input, button {
     border: 1px solid #3b7dd4;
     color: #c7cfd7;
 }
+

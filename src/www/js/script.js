@@ -1,6 +1,8 @@
 var count = 0;
 const { ipcRenderer } = require('electron');
 const clipboardy = require('node-clipboardy');
+const fs = require('fs');
+const path = require('node:path');
 
 function formatDate () {
     let today = new Date();
@@ -74,11 +76,68 @@ fetch('../www/config.json')
 });
 
 // Clear config file
+
+
+const yes = document.getElementById('areyousure-yes');
+const no = document.getElementById('areyousure-no');
+const popup = document.getElementById('areyousure-container');
+const opacity = document.getElementById('opacity');
+// Check if both buttons exist and add event listeners
+if (yes && no) {
+    yes.addEventListener('click', () => {
+        popup.style.display = 'none';
+        opacity.style.display = 'none';
+        ipcRenderer.send('clear');
+        location.reload();
+    });
+    no.addEventListener('click', () => {
+        popup.style.display = 'none';
+        opacity.style.display = 'none';
+    });
+}
+
 document.getElementById('clear').addEventListener('click', () => {
-    ipcRenderer.send('clear');
-    location.reload();
+    // Are you sure popup
+    popup.style.display = 'block';
+    // Auto focus on no button
+    no.focus();
+    // Enable opacity
+    opacity.style.display = 'block';
 });
-    
+
+// Import config file
+document.getElementById('import-config').addEventListener('click', () => {
+    document.getElementById('import-config-file').click();
+    // Read file
+    document.getElementById('import-config-file').addEventListener('change', () => {
+        const file = document.getElementById('import-config-file').files[0];
+        if (file.type != 'application/json') return showToast('error', 'Error importing config file');
+        // move file to www folder
+        const cwd = path.join(__dirname, '../www/config.json');
+        fs.copyFile(file.path, cwd, (err) => {
+            if (err) {
+                showToast('error', 'Error importing config file');
+            } else {
+                showToast('success', 'Imported config file');
+                setTimeout(() => {
+                    location.reload();
+                }, 2000);
+            }
+        });
+    });
+});
+
+// Export config file
+document.getElementById('export-config').addEventListener('click', () => {
+    // Create anchor element
+    const a = document.createElement('a');
+    a.style.display = 'none';
+    a.setAttribute('href', '../www/config.json');
+    a.setAttribute('download', 'config.json');
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+});
 
 const cards = document.getElementsByClassName('card-mode');
 
@@ -300,12 +359,10 @@ function generateAll() {
 function showToast (mode, message) {
     if (mode === 'success') {
         // Green
-        document.getElementsByClassName('notification-bar')[0].style.border = '1px solid #238636';
-        document.getElementsByClassName('notification-content')[0].style.color = '#238636';
+        document.getElementsByClassName('notification-bar')[0].style.borderRight = '4px solid #238636';
     } else if (mode === 'error') {
         // Red
-        document.getElementsByClassName('notification-bar')[0].style.border = '1px solid #ed6a5e';
-        document.getElementsByClassName('notification-content')[0].style.color = '#ed6a5e';
+        document.getElementsByClassName('notification-bar')[0].style.borderRight = '4px solid #ed6a5e';
     }
     document.getElementsByClassName('notification-bar')[0].style.display = 'flex';
     document.getElementsByClassName('notification-content')[0].innerHTML = message;

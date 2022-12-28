@@ -16,6 +16,15 @@
     <!-- Assign the 'dark' class to any element to apply a dark mode style to it -->
     <!-- Assign the 'light' class to any element to apply a light mode style to it -->
 <body>
+    <div id="opacity"></div>
+    <div id="areyousure-container">
+        <div id="areyousure">
+            <p>Are you sure?</p>
+            <p>This action cannot be undone.</p>
+            <button class="center" type="button" id="areyousure-yes">Yes</button>
+            <button class="center" type="button" id="areyousure-no">No</button>
+        </div>
+    </div>
     <div id='titlebar' class='dark'>
         <div class='container'>
             <div id='title'>Devolutions Template Generator</div>
@@ -33,6 +42,7 @@
                 <div class="notification-close">X</div>
                 <div class="notification-content"></div>
             </div>
+            <br><br><br>
             <div class="card">
                 <div class="card-mode">+</div>
                 <div class="card-header">Site Information</div>
@@ -84,10 +94,13 @@
                 </div>
             </div>
             </div>
-            <div id="version">Version 2.0.3</div>
+            <div id="version">Version 2.0.6</div>
             <div class="footer-button">
                 <button type="button" id="save">Save</button>
                 <button type="button" id="clear">Clear</button>
+                <button type="button" id="export-config">Export</button>
+                <button type="button" id="import-config">Import</button>
+                <input type="file" id="import-config-file" accept="application/json" style="display: none;"/>
             </div>
         </div>
     </div>
