@@ -34,8 +34,8 @@ ipcMain.on('clear', (event) => {
 
 const createWindow = () => {
     const win = new BrowserWindow({
-        width: 650,
-        minWidth: 600,
+        width: 700,
+        minWidth: 700,
         height: 950,
         minHeight: 400,
         frame: false,

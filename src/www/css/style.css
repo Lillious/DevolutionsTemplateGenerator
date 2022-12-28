@@ -36,6 +36,10 @@ input[type=date]::-webkit-inner-spin-button {
     font-size: 14px;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 body {
     background: #161b22;
     color: #212121;
@@ -482,3 +486,13 @@ input, button {
     color: #c7cfd7;
 }
 
+#searchbar {
+    position: fixed;
+    left: 15px;
+    bottom: 8px;
+    display: none;
+}
+
+#searchbar input {
+    width: 202px;
+}

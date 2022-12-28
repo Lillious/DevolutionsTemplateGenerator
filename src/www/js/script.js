@@ -373,3 +373,50 @@ function showToast (mode, message) {
         document.getElementsByClassName('notification-content')[0].innerHTML = '';
     }, 3000);
 }
+
+const searcbar = document.getElementById('searchbar');
+// Check if control f was pressed
+document.addEventListener('keydown', (event) => {
+    if (event.ctrlKey && event.key === 'f') {
+        if (searcbar.style.display === 'block') {
+            searcbar.style.display = 'none';
+            // Remove search highlight
+            let usernames = document.getElementsByClassName('username-input');
+            for (let i = 0; i < count; i++) {
+                usernames[i].style.backgroundColor = 'transparent';
+            }
+        } else {
+            searcbar.style.display = 'block';
+            searcbar.getElementsByTagName('input')[0].focus();
+        }
+    }
+});
+
+searcbar.getElementsByTagName('input')[0].addEventListener('keyup', (event) => {
+    // Check if enter was pressed
+    if (event.key === 'Enter') {
+        const search = event.target.value.toLowerCase();
+        let usernames = document.getElementsByClassName('username-input');
+        let mode = document.getElementsByClassName('card-mode')[1];
+        if (mode.innerHTML === '+') {
+            mode.click();
+        }
+        for (let i = 0; i < count; i++) {
+            let username = usernames[i].value;
+            if (username.toLowerCase().includes(search)) {
+                // Highlight
+                usernames[i].style.backgroundColor = 'rgba(59, 125, 212, 0.5)'
+            } else {
+                usernames[i].style.backgroundColor = 'transparent';
+            }
+        }
+
+        // Scroll to first match
+        for (let i = 0; i < count; i++) {
+            if (usernames[i].style.backgroundColor === 'rgba(59, 125, 212, 0.5)') {
+                usernames[i].scrollIntoView();
+                break;
+            }
+        }
+    }
+});
