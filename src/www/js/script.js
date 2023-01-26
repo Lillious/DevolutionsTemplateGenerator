@@ -156,7 +156,6 @@ for (let i = 0; i < cards.length; i++) {
 
 document.getElementById('add-entry').addEventListener('click', addEntry);
 document.getElementById('spoiler-generate').getElementsByTagName('a')[0].addEventListener('click', addEntry);
-document.getElementById('remove-entry').addEventListener('click', removeEntry);
 
 // Export Information
 const Title = 'name,username,password,group';
@@ -245,6 +244,19 @@ function addEntry() {
     let entry = document.createElement("div");
     entry.className = "entry";
     parent.appendChild(entry);
+    // Add delete button
+    let deleteButton = document.createElement("button");
+    deleteButton.className = "delete-button";
+    deleteButton.innerHTML = "X";
+    
+    deleteButton.addEventListener('click', () => {
+        parent.removeChild(entry);
+        count--;
+        if (count == 0) {
+            document.getElementById('spoiler-generate').style.display = 'block';
+        }
+    });
+    entry.appendChild(deleteButton);
     let username = document.createElement("div");
     username.className = "username";
     let usernameText = document.createElement("p");
@@ -256,6 +268,7 @@ function addEntry() {
     usernameInput.placeholder = "Group/Username";
     usernameInput.className = "username-input";
     username.appendChild(usernameInput);
+    
     usernameInput.addEventListener('dblclick', () => {
         if (usernameInput.value === "") return;
         clipboardy.writeSync(usernameInput.value);
@@ -274,6 +287,14 @@ function addEntry() {
     passwordInput.id = `password-${count}`;
     passwordInput.className = "password-input";
     password.appendChild(passwordInput);
+    passwordInput.addEventListener('mouseover', () => {
+        passwordInput.type = "text";
+    });
+
+    passwordInput.addEventListener('mouseout', () => {
+        passwordInput.type = "password";
+    });
+
     passwordInput.addEventListener('dblclick', () => {
         // Copy to clipboard if not empty
         if (passwordInput.value === "") return;
@@ -288,17 +309,8 @@ function addEntry() {
     }
 }
 
-function removeEntry () {
-    if (count == 0) return;
-    if (count == 1) {
-        document.getElementById('spoiler-generate').style.display = 'block';
-    }
-    let parent = document.getElementsByClassName("scroll-box-content")[1];
-    parent.removeChild(parent.lastChild);
-    count--;
-}
-
-const charset = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","1","2","3","4","5","6","7","8","9","0"];
+const letters = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"];
+const numbers = ["0","1","2","3","4","5","6","7","8","9"];
 document.getElementById('generate-password').addEventListener("click", generateAll);
 
 
@@ -310,9 +322,9 @@ function generate() {
 
     // Iterate based on length value
     for (let i = 0; i < 16; i++) {
-        // Pick random character from charset
-        let random = Math.floor(Math.random() * charset.length);
-        characters.push(charset[random]);
+        // 50% chance of picking a letter or number
+        let charset = Math.random() > 0.5 ? letters : numbers;
+        characters.push(charset[Math.floor(Math.random() * charset.length)]);
     }
 
     if (specialCharacters.length > characters.length) return;
@@ -322,6 +334,11 @@ function generate() {
     // Prevent password from starting with a special character
     while (specialCharacters.includes(password[0]) || specialCharacters.includes(password[password.length -1])) {
         password = shuffle(password);
+    }
+
+    if (!password.some(char => numbers.includes(char))) {
+        let index = password.findIndex(char => !specialCharacters.includes(char));
+        password[index] = numbers[Math.floor(Math.random() * numbers.length)];
     }
 
     const sanitized = password.toString().replace(/,/g, '');

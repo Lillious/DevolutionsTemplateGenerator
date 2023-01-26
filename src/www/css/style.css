@@ -54,6 +54,14 @@ button {
     cursor: pointer;
 }
 
+.password-input {
+    user-select: none;
+}
+
+.username-input {
+    user-select: none;
+}
+
 /* titlebar */
 
 #titlebar {
@@ -374,7 +382,6 @@ input:focus {
 
 .entry .username, .entry .password {
     display: inline-block;
-    margin-right: 10px;
 }
 
 .entry p {
@@ -495,4 +502,22 @@ input, button {
 
 #searchbar input {
     width: 202px;
+}
+
+.entry .delete-button {
+    max-width: 30px;
+    margin-right: 15px;
+    margin-left: -5px;
+    color: #d75a4e;
+}
+
+.entry .delete-button:hover {
+    cursor: pointer;
+    color: #ed6a5e;
+}
+
+.entry .delete-button:active {
+    background: #ed6a5e;
+    color: #c7cfd7;
+    border: 1px solid #d75a4e;
 }
