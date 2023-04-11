@@ -1,7 +1,7 @@
 var count = 0;
 const { ipcRenderer } = require('electron');
 const clipboardy = require('node-clipboardy');
-const fs = require('fs');
+const fs = require('node:fs');
 const path = require('node:path');
 
 function formatDate () {
@@ -268,12 +268,6 @@ function addEntry() {
     usernameInput.placeholder = "Group/Username";
     usernameInput.className = "username-input";
     username.appendChild(usernameInput);
-    
-    usernameInput.addEventListener('dblclick', () => {
-        if (usernameInput.value === "") return;
-        clipboardy.writeSync(usernameInput.value);
-        showToast('success', 'Username copied to clipboard');
-    });
     entry.appendChild(username);
 
     let password = document.createElement("div");
@@ -287,21 +281,29 @@ function addEntry() {
     passwordInput.id = `password-${count}`;
     passwordInput.className = "password-input";
     password.appendChild(passwordInput);
-    passwordInput.addEventListener('mouseover', () => {
+    passwordInput.addEventListener('contextmenu', () => {
+        if (passwordInput.value === "") return;
+        if (passwordInput.type === "text") return;
         passwordInput.type = "text";
-    });
-
-    passwordInput.addEventListener('mouseout', () => {
-        passwordInput.type = "password";
+        setTimeout(() => {
+            passwordInput.type = "password";
+        }, 5000);
     });
 
     passwordInput.addEventListener('dblclick', () => {
         // Copy to clipboard if not empty
         if (passwordInput.value === "") return;
         passwordInput.type = "text";
-        clipboardy.writeSync(passwordInput.value);
-        passwordInput.type = "password";
-        showToast('success', 'Password copied to clipboard');
+        clipboardy.write(passwordInput.value)
+            .then(() => {
+                showToast('success', 'Password copied to clipboard');
+            })
+            .catch(() => {
+                showToast('error', 'Unable to copy password to clipboard');
+            })
+            .finally(() => {
+                passwordInput.type = "password";
+            });
     });
     entry.appendChild(password);
     if (document.getElementById('spoiler-generate')) {
