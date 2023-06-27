@@ -293,16 +293,12 @@ function addEntry() {
     passwordInput.addEventListener('dblclick', () => {
         // Copy to clipboard if not empty
         if (passwordInput.value === "") return;
-        passwordInput.type = "text";
         clipboardy.write(passwordInput.value)
             .then(() => {
                 showToast('success', 'Password copied to clipboard');
             })
             .catch(() => {
                 showToast('error', 'Unable to copy password to clipboard');
-            })
-            .finally(() => {
-                passwordInput.type = "password";
             });
     });
     entry.appendChild(password);

@@ -8,7 +8,12 @@ npm i
 npm start
 ```
 
+# Build
+```
+npm run build
+```
+
 # Package
 ```
-npx electron-packager .
+npm run build-zip
 ```

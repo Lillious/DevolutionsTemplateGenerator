@@ -1,12 +1,16 @@
 {
   "name": "devolutionstemplategenerator",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "",
   "main": "app.js",
   "type": "commonjs",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "electron ."
+    "start": "electron .",
+    "clean": "rimraf release/ && rimraf ./src/www/config.json",
+    "build": "npm run clean && electron-packager . --platform=win32 --arch=x64 --out=release --overwrite && npm run uglifyjs",
+    "uglifyjs": "uglifyjs-folder release/devolutionstemplategenerator-win32-x64/resources/app -eo release/devolutionstemplategenerator-win32-x64/resources/app -m -r -x .js",
+    "build-zip": "npm run build && npm run zip && rimraf release/devolutionstemplategenerator-win32-x64",
+    "zip": "cd release/devolutionstemplategenerator-win32-x64 && bestzip ../devolutionstemplategenerator-win32-x64.zip * && cd ../.."
   },
   "keywords": [],
   "author": "",
@@ -16,7 +20,10 @@
     "electron-packager": "^17.0.0"
   },
   "dependencies": {
+    "bestzip": "^2.2.1",
     "nconf": "^0.12.0",
-    "node-clipboardy": "^1.0.3"
+    "node-clipboardy": "^1.0.3",
+    "rimraf": "^5.0.1",
+    "uglifyjs-folder": "^3.3.0"
   }
 }
