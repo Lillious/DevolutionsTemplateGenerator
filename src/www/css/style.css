@@ -1,12 +1,14 @@
 ::-webkit-scrollbar {
   background: transparent;
-  width: 8px;
+  width: 5px;
 }
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 5px;
 }
 ::-webkit-scrollbar-thumb {
   background: #3f78c4;
+  border-radius: 5px;
 }
 ::-webkit-scrollbar-thumb:active {
   background: #3f78c4;
@@ -165,7 +167,7 @@ button {
     left: 5px;
     right: 5px;
     bottom: 0;
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 
 .container {
@@ -204,7 +206,7 @@ button {
 /* Scroll Box Styling */
 
 .scroll-box {
-    overflow-y: scroll;
+    overflow-y: auto;
     margin-top: 10px;
     max-height: 286px;
     margin-left: -10px;
@@ -284,6 +286,7 @@ button {
     overflow: hidden;
     max-height: 0px;
     margin-bottom: 10px;
+    box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.2);
 }
 
 .card .card-header {
@@ -369,11 +372,9 @@ input {
     color: #c7cfd7;
     padding: 8px;
     font-size: 16px;
-}
-
-input {
     width: 200px;
     margin-left: -2px;
+    box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.2);
 }
 
 input:focus {
@@ -417,48 +418,12 @@ a:hover {
     position: fixed;
     left: 25px;
     top: 55px;
-    padding: 8px;
+    padding: 5px;
+    padding-right: 15px;
     color: #c7cfd7;
     background-color: rgba(0, 0, 0, 0.2);
-    border-left: 4px solid #d6c315;
-}
-
-.tooltip {
-    position: relative;
-    display: inline-block;
-    border-bottom: 1px dotted black;
-  }
-  
-.tooltip .tooltiptext {
-    visibility: hidden;
-    width: 120px;
-    background-color: #555;
-    color: #fff;
-    text-align: center;
-    padding: 5px 0;
-    position: absolute;
-    z-index: 1;
-    bottom: 125%;
-    left: 50%;
-    margin-left: -60px;
-    opacity: 0;
-    transition: opacity 0.3s;
-}
-  
-.tooltip .tooltiptext::after {
-    content: "";
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    margin-left: -5px;
-    border-width: 5px;
-    border-style: solid;
-    border-color: #555 transparent transparent transparent;
-}
-  
-.tooltip:hover .tooltiptext {
-    visibility: visible;
-    opacity: 1;
+    border-left: 2px solid #d6c315;
+    box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.2);
 }
 
 input, button {
@@ -509,15 +474,40 @@ input, button {
     margin-right: 15px;
     margin-left: -5px;
     color: #d75a4e;
+    background: transparent;
+    border: none;
+    font-size: 16px;
 }
 
 .entry .delete-button:hover {
     cursor: pointer;
     color: #ed6a5e;
+    background: transparent;
+    border: none;
 }
 
 .entry .delete-button:active {
-    background: #ed6a5e;
+    color: #d75a4e;
+    background: transparent;
+    border: none;
+}
+
+#import-config {
+    transform: rotate(180deg);
+}
+
+#export {
+    transform: rotate(90deg);
+}
+
+#tooltip {
+    border: 1px solid #3f78c4;
+    background: #0d1117;
     color: #c7cfd7;
-    border: 1px solid #d75a4e;
+    padding: 8px;
+    position: fixed;
+    right: 25px;
+    bottom: 75px;
+    opacity: 0;
+    transition: opacity ease-in-out 0.2s;
 }

@@ -2,7 +2,7 @@
 <html lang='en'>
 <head>
     <meta charset='UTF-8'>
-    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <meta viewport='width=device-width, initial-scale=1.0, maximum-scale=1, minimum-scale=1'>
     <meta http-equiv='X-UA-Compatible' content='ie=edge'>
     <title>Devolutions Template Generator</title>
     <!-- Preload Javascript -->
@@ -11,7 +11,9 @@
 
     <!-- Preload CSS -->
     <link rel='preload' href='./css/style.css' as='style'>
+    <link rel='preload' href='./css/material.css' as='style'>
     <link rel='stylesheet' href='./css/style.css'>
+    <link rel='stylesheet' href='./css/material.css'>
 </head>
     <!-- Assign the 'dark' class to any element to apply a dark mode style to it -->
     <!-- Assign the 'light' class to any element to apply a light mode style to it -->
@@ -38,6 +40,7 @@
     <!-- Page Content -->
     <div id='content'>
         <div class='container'>
+            <div id="tooltip">Test</div>
             <div class="notification-bar">
                 <div class="notification-close">X</div>
                 <div class="notification-content"></div>
@@ -79,29 +82,28 @@
                 <div class="card-mode">+</div>
                 <div class="card-header">Passwords</div>
                 <div class="card-content">
+                    <div class="card-footer">
+                        <span id="add-entry" class="material-symbols-outlined tooltip">add_circle</span>
+                        <span id="generate-password" class="material-symbols-outlined tooltip">key</span>
+                        <span id="export" class="material-symbols-outlined">ios_share</span>
+                    </div>
                     <div class="scroll-box">
                         <div class="scroll-box-content">
                             <div id="spoiler-generate">There are no password records here. <a>Create</a> a new record?</div>
                         </div>
                     </div>
                 </div>
-                
-                <div class="card-footer">
-                    <button type="button" id="add-entry">Create</button>
-                    <button type="button" id="generate-password">Generate</button>
-                    <button type="button" id="export">Export</button>
-                </div>
             </div>
             </div>
-            <div id="version">Version 2.1.1</div>
+            <div id="version"></div>
             <div id="searchbar">
                 <input type="text" spellcheck="false" autocomplete="false" placeholder="Search..."/>
             </div>
             <div class="footer-button">
-                <button type="button" id="save">Save</button>
-                <button type="button" id="clear">Clear</button>
-                <button type="button" id="export-config">Export</button>
-                <button type="button" id="import-config">Import</button>
+                <span id="save" class="material-symbols-outlined">save</span>
+                <span id="clear" class="material-symbols-outlined">clear</span>
+                <span id="export-config" class="material-symbols-outlined">ios_share</span>
+                <span id="import-config" class="material-symbols-outlined">ios_share</span>
                 <input type="file" id="import-config-file" accept="application/json" style="display: none;"/>
             </div>
         </div>

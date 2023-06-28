@@ -96,7 +96,8 @@ if (yes && no) {
     });
 }
 
-document.getElementById('clear').addEventListener('click', () => {
+const clear = document.getElementById('clear');
+clear.addEventListener('click', () => {
     // Are you sure popup
     popup.style.display = 'block';
     // Auto focus on no button
@@ -106,7 +107,8 @@ document.getElementById('clear').addEventListener('click', () => {
 });
 
 // Import config file
-document.getElementById('import-config').addEventListener('click', () => {
+const importConfig = document.getElementById('import-config');
+importConfig.addEventListener('click', () => {
     document.getElementById('import-config-file').click();
     // Read file
     document.getElementById('import-config-file').addEventListener('change', () => {
@@ -128,7 +130,8 @@ document.getElementById('import-config').addEventListener('click', () => {
 });
 
 // Export config file
-document.getElementById('export-config').addEventListener('click', () => {
+const exportConfig = document.getElementById('export-config');
+exportConfig.addEventListener('click', () => {
     // Create anchor element
     const a = document.createElement('a');
     a.style.display = 'none';
@@ -154,7 +157,8 @@ for (let i = 0; i < cards.length; i++) {
     });
 }
 
-document.getElementById('add-entry').addEventListener('click', addEntry);
+const addEntryButton = document.getElementById('add-entry');
+addEntryButton.addEventListener('click', addEntry);
 document.getElementById('spoiler-generate').getElementsByTagName('a')[0].addEventListener('click', addEntry);
 
 // Export Information
@@ -193,7 +197,8 @@ function reformatDate (date) {
     return `${parts[0]}-${parts[1]}-${parts[2]}`;
 }
 
-document.getElementById('export').addEventListener('click', () => {
+const exportCSV = document.getElementById('export');
+exportCSV.addEventListener('click', () => {
     const usernames = document.getElementsByClassName('username');
     if (usernames.length === 0) return showToast('error', 'No entries to export');
     for (let i = 1; i < usernames.length +1; i++) {
@@ -309,7 +314,8 @@ function addEntry() {
 
 const letters = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"];
 const numbers = ["0","1","2","3","4","5","6","7","8","9"];
-document.getElementById('generate-password').addEventListener("click", generateAll);
+const generatePassword = document.getElementById('generate-password');
+generatePassword.addEventListener("click", generateAll);
 
 
 function generate() {
@@ -435,3 +441,72 @@ searcbar.getElementsByTagName('input')[0].addEventListener('keyup', (event) => {
         }
     }
 });
+
+/* Tooltip logic */
+const tooltip = document.getElementById('tooltip');
+save.addEventListener('mouseover', () => {
+    tooltip.style.opacity = '1';
+    tooltip.innerHTML = 'Save to the configuration file manually';
+});
+
+save.addEventListener('mouseout', () => {
+    tooltip.style.opacity = '0';
+});
+
+clear.addEventListener('mouseover', () => {
+    tooltip.style.opacity = '1';
+    tooltip.innerHTML = 'Clear the configuration file and reset the page';
+});
+
+clear.addEventListener('mouseout', () => {
+    tooltip.style.opacity = '0';
+});
+
+importConfig.addEventListener('mouseover', () => {
+    tooltip.style.opacity = '1';
+    tooltip.innerHTML = 'Import a configuration file from disk';
+});
+
+importConfig.addEventListener('mouseout', () => {
+    tooltip.style.opacity = '0';
+});
+
+exportConfig.addEventListener('mouseover', () => {
+    tooltip.style.opacity = '1';
+    tooltip.innerHTML = 'Export a configuration file to disk';
+});
+
+exportConfig.addEventListener('mouseout', () => {
+    tooltip.style.opacity = '0';
+});
+
+generatePassword.addEventListener('mouseover', () => {
+    tooltip.style.opacity = '1';
+    tooltip.innerHTML = 'Generate passwords for all entries with empty password fields';
+});
+
+generatePassword.addEventListener('mouseout', () => {
+    tooltip.style.opacity = '0';
+});
+
+addEntryButton.addEventListener('mouseover', () => {
+    tooltip.style.opacity = '1';
+    tooltip.innerHTML = 'Add a new entry';
+});
+
+addEntryButton.addEventListener('mouseout', () => {
+    tooltip.style.opacity = '0';
+});
+
+exportCSV.addEventListener('mouseover', () => {
+    tooltip.style.opacity = '1';
+    tooltip.innerHTML = 'Export all entries to a CSV file';
+});
+
+exportCSV.addEventListener('mouseout', () => {
+    tooltip.style.opacity = '0';
+});
+
+// Read package.json to get version
+const package = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
+document.getElementById('version').innerHTML = `v${package.version}`;
