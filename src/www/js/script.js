@@ -2,6 +2,10 @@ var count = 0;
 const { ipcRenderer } = require('electron');
 const clipboardy = require('node-clipboardy');
 const fs = require('node:fs');
+const fse = require('fs-extra');
+const fetch = require('node-fetch');
+const extract = require('extract-zip');
+const { exec } = require('child_process');
 const path = require('node:path');
 
 function formatDate () {
@@ -24,6 +28,61 @@ minimize.addEventListener('click', () => {
 maximize.addEventListener('click', () => {
     ipcRenderer.send('maximize');
 });
+
+const File = {
+    async extract(source, target) {
+        try {
+            await extract(source, {
+                dir: target
+            })
+        } catch (err) {
+            throw err;
+        }
+    }
+}
+
+const Notification = {
+    show(mode, message) {
+        const container = document.getElementById('content');
+        const NotificationContainer = document.createElement('div');
+        const NotificationContent = document.createElement('div');
+        NotificationContainer.classList.add('notification-bar');
+        NotificationContent.classList.add('notification-content');
+        NotificationContent.innerHTML = message;
+        NotificationContainer.appendChild(NotificationContent);
+        NotificationContainer.style.marginTop = `${50 * document.getElementsByClassName('notification-bar').length}px`;
+        switch (mode) {
+            case 'success':
+                NotificationContainer.style.borderRight = '4px solid #61c555';
+                break;
+            case 'error':
+                NotificationContainer.style.borderRight = '4px solid #ed6a5e';
+                break;
+            case 'information':
+                NotificationContainer.style.borderRight = '4px solid #3f78c4';
+                break;
+            case 'warn':
+                NotificationContainer.style.borderRight = '4px solid #f4c04e';
+                break;
+            default:
+                NotificationContainer.style.borderRight = '4px solid #3f78c4';
+                break;
+        }
+        container.appendChild(NotificationContainer);
+        this.clear(NotificationContainer);
+    },
+    clear(notification) {
+        setTimeout(() => {
+            const notifications = document.getElementsByClassName('notification-bar');
+            for (let i = 0; i < notifications.length; i++) {
+                notifications[i].style.marginTop = `${50 * i - 50}px`;
+            }
+            notification.remove();
+        }, 3000);
+    }
+}
+
+Notification.show("information", "Checking for updates...");
 
 const save = document.getElementById('save');
 save.addEventListener('click', () => {
@@ -50,16 +109,11 @@ setInterval(() => {
     save.click();
 }, 30000);
 
-document.getElementsByClassName('notification-close')[0].addEventListener('click', () => {
-    document.getElementsByClassName('notification-bar')[0].style.display = 'none';
-});
-
 // Load entries from config file
-fetch('../www/config.json')
-.then(response => response.json())
-.then(data => {
-    let Accounts = data.Accounts;
-    let SiteInformation = data.Site_Information;
+const config = JSON.parse(fs.readFileSync(path.join(__dirname, '../www/config.json'), 'utf8'));
+const Accounts = config.Accounts;
+const SiteInformation = config.Site_Information;
+if (Accounts?.length) {
     for (let i = 0; i < Accounts.length; i++) {
         addEntry();
         let username = Object.keys(Accounts[i])[0];
@@ -67,17 +121,17 @@ fetch('../www/config.json')
         document.getElementsByClassName('username-input')[i].value = username;
         document.getElementsByClassName('password-input')[i].value = password;
     }
-    // Load site information from config file
-    document.getElementsByClassName(`site-name`)[0].getElementsByTagName('input')[0].value = SiteInformation[0].Name;
-    document.getElementsByClassName(`account-number`)[0].getElementsByTagName('input')[0].value = SiteInformation[0].Account_Number;
-    document.getElementsByClassName(`munis-version`)[0].getElementsByTagName('input')[0].value = SiteInformation[0].Munis_Version;
-    document.getElementsByClassName(`engagement-type`)[0].getElementsByTagName('input')[0].value = SiteInformation[0].Engagement_Type;
-    document.getElementsByClassName(`engagement-date`)[0].getElementsByTagName('input')[0].value = SiteInformation[0].Engagement_Date;
-});
+}
+// Load site information from config file
+if (SiteInformation) {
+    document.getElementsByClassName(`site-name`)[0].getElementsByTagName('input')[0].value = SiteInformation[0].Name || '';
+    document.getElementsByClassName(`account-number`)[0].getElementsByTagName('input')[0].value = SiteInformation[0].Account_Number || '';
+    document.getElementsByClassName(`munis-version`)[0].getElementsByTagName('input')[0].value = SiteInformation[0].Munis_Version || '';
+    document.getElementsByClassName(`engagement-type`)[0].getElementsByTagName('input')[0].value = SiteInformation[0].Engagement_Type || '';
+    document.getElementsByClassName(`engagement-date`)[0].getElementsByTagName('input')[0].value = SiteInformation[0].Engagement_Date || '';
+}
 
 // Clear config file
-
-
 const yes = document.getElementById('areyousure-yes');
 const no = document.getElementById('areyousure-no');
 const popup = document.getElementById('areyousure-container');
@@ -113,14 +167,14 @@ importConfig.addEventListener('click', () => {
     // Read file
     document.getElementById('import-config-file').addEventListener('change', () => {
         const file = document.getElementById('import-config-file').files[0];
-        if (file.type != 'application/json') return showToast('error', 'Error importing config file');
+        if (file.type != 'application/json') return Notification.show('error', 'Error importing config file');
         // move file to www folder
         const cwd = path.join(__dirname, '../www/config.json');
         fs.copyFile(file.path, cwd, (err) => {
             if (err) {
-                showToast('error', 'Error importing config file');
+                Notification.show('error', 'Error importing config file');
             } else {
-                showToast('success', 'Imported config file');
+                Notification.show('success', 'Imported config file');
                 setTimeout(() => {
                     location.reload();
                 }, 2000);
@@ -200,7 +254,16 @@ function reformatDate (date) {
 const exportCSV = document.getElementById('export');
 exportCSV.addEventListener('click', () => {
     const usernames = document.getElementsByClassName('username');
-    if (usernames.length === 0) return showToast('error', 'No entries to export');
+    if (usernames.length === 0) return Notification.show('error', 'No entries to export');
+    // Check if there are duplicate usernames
+    let usernamesArray = [];
+    for (let i = 1; i < usernames.length +1; i++) {
+        let string = document.getElementById(`username-${i}`).value;
+        let username = string.split("/")[1];
+        usernamesArray.push(username);
+    }
+    let uniqueUsernames = [...new Set(usernamesArray)];
+    if (uniqueUsernames.length != usernamesArray.length) return Notification.show('error', 'Duplicate usernames found');
     for (let i = 1; i < usernames.length +1; i++) {
         let string = document.getElementById(`username-${i}`).value;
         let siteName = document.getElementsByClassName(`site-name`)[0].getElementsByTagName('input')[0].value;
@@ -215,23 +278,23 @@ exportCSV.addEventListener('click', () => {
         hiddenpassword.type = "text";
         let password = hiddenpassword.value;
         hiddenpassword.type = "password";
-        if (usergroup === "") return showToast('error', 'Username cannot be empty');
-        if (!string.includes('/')) return showToast('error', 'Username must be in the format of "group/username"');
-        if (username === "") return showToast('error', 'Username cannot be empty');
-        if (password === "") return showToast('error', 'Password cannot be empty');
-        if (siteName === "") return showToast('error', 'Site Name cannot be empty');
-        if (accountNumber === "") return showToast('error', 'Account Number cannot be empty');
-        if (munisVersion === "") return showToast('error', 'Munis Version cannot be empty');
-        if (engagementType === "") return showToast('error', 'Engagement Type cannot be empty');
-        if (engagementDate === "") return showToast('error', 'Engagement Date cannot be empty');
+        if (usergroup === "") return Notification.show('error', 'Username cannot be empty');
+        if (!string.includes('/')) return Notification.show('error', 'Username must be in the format of "group/username"');
+        if (username === "") return Notification.show('error', 'Username cannot be empty');
+        if (password === "") return Notification.show('error', 'Password cannot be empty');
+        if (siteName === "") return Notification.show('error', 'Site Name cannot be empty');
+        if (accountNumber === "") return Notification.show('error', 'Account Number cannot be empty');
+        if (munisVersion === "") return Notification.show('error', 'Munis Version cannot be empty');
+        if (engagementType === "") return Notification.show('error', 'Engagement Type cannot be empty');
+        if (engagementDate === "") return Notification.show('error', 'Engagement Date cannot be empty');
 
-        if (typeof siteName != 'string') return showToast('error', 'Site Name could not be parsed as text');
-        if (isNaN(parseInt(accountNumber))) return showToast('error', 'Account Number could not be parsed as an integer');
-        if (isNaN(parseInt(munisVersion))) return showToast('error', 'Munis Version could not be parsed as an integer');
-        if (typeof engagementType != 'string') return showToast('error', 'Engagement Type could not be parsed as text');
-        if (validateDate(engagementDate) === false) return showToast('error', 'Engagement Date could not be parsed as a date');
-        if (typeof string != 'string') return showToast('error', 'Username could not be parsed as text');
-        if (typeof password != 'string') return showToast('error', 'Password could not be parsed as text');
+        if (typeof siteName != 'string') return Notification.show('error', 'Site Name could not be parsed as text');
+        if (isNaN(parseInt(accountNumber))) return Notification.show('error', 'Account Number could not be parsed as an integer');
+        if (isNaN(parseInt(munisVersion))) return Notification.show('error', 'Munis Version could not be parsed as an integer');
+        if (typeof engagementType != 'string') return Notification.show('error', 'Engagement Type could not be parsed as text');
+        if (validateDate(engagementDate) === false) return Notification.show('error', 'Engagement Date could not be parsed as a date');
+        if (typeof string != 'string') return Notification.show('error', 'Username could not be parsed as text');
+        if (typeof password != 'string') return Notification.show('error', 'Password could not be parsed as text');
         generateCSV(username.toLowerCase(), password, group);
     }
     data.unshift([Title]);
@@ -240,7 +303,7 @@ exportCSV.addEventListener('click', () => {
     }).join('\n').replace(/(^\[)|(\]$)/mg, '');
     downloadFile(`Devolutions-Report-${formatDate()}.csv`, report);
     data = [];
-    return showToast('success', 'Report exported successfully');
+    return Notification.show('success', 'Report exported successfully');
 });
 
 function addEntry() {
@@ -300,10 +363,10 @@ function addEntry() {
         if (passwordInput.value === "") return;
         clipboardy.write(passwordInput.value)
             .then(() => {
-                showToast('success', 'Password copied to clipboard');
+                Notification.show('success', 'Password copied to clipboard');
             })
             .catch(() => {
-                showToast('error', 'Unable to copy password to clipboard');
+                Notification.show('error', 'Unable to copy password to clipboard');
             });
     });
     entry.appendChild(password);
@@ -375,24 +438,6 @@ function generateAll() {
             document.getElementById(`password-${i}`).value = generate();
         }
     }
-}
-
-function showToast (mode, message) {
-    if (mode === 'success') {
-        // Green
-        document.getElementsByClassName('notification-bar')[0].style.borderRight = '4px solid #238636';
-    } else if (mode === 'error') {
-        // Red
-        document.getElementsByClassName('notification-bar')[0].style.borderRight = '4px solid #ed6a5e';
-    }
-    document.getElementsByClassName('notification-bar')[0].style.display = 'flex';
-    document.getElementsByClassName('notification-content')[0].innerHTML = message;
-    setTimeout(() => {
-        if (document.getElementsByClassName('notification-bar')[0].style.display === 'flex') {
-            document.getElementsByClassName('notification-bar')[0].style.display = 'none';
-        }
-        document.getElementsByClassName('notification-content')[0].innerHTML = '';
-    }, 3000);
 }
 
 const searcbar = document.getElementById('searchbar');
@@ -508,5 +553,130 @@ exportCSV.addEventListener('mouseout', () => {
 });
 
 // Read package.json to get version
-const package = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
-document.getElementById('version').innerHTML = `v${package.version}`;
+const package = JSON.parse(fs.readFileSync('../../package.json', 'utf8'));
+const version = package.version;
+document.getElementById('version').innerHTML = `v${version}`;
+
+// Check for updates
+fetch("https://api.github.com/repos/Lillious/DevolutionsTemplateGenerator/releases/latest")
+    .then(res => res.json())
+        .then(json => {
+            if (json.tag_name !== version) {
+                Notification.show("information", `Update available: ${json.tag_name}`);
+                Notification.show("information", "Downloading update...");
+                download({
+                    url: json.assets[0].browser_download_url,
+                    fileName: "update.zip",
+                    temp: "./temp-update",
+                }).then(() => {
+                    Notification.show("information", "Extracting update...");
+                    File.extract("./temp-update/update.zip", path.join(__dirname, '..', '..', '..', '..', 'update'))
+                    .then(() => {
+                        const src = path.join(__dirname, '..', '..', '..', '..', 'update', 'resources', 'app', 'src');
+                        const dest = path.join(__dirname, '..', '..', '..', '..', 'resources', 'app', 'src');
+                        const packageSrc = path.join(__dirname, '..', '..', '..', '..', 'update', 'resources', 'app', 'package.json');
+                        const packageDest = path.join(__dirname, '..', '..', '..', '..', 'resources', 'app', 'package.json');
+                        const mainSrc = path.join(__dirname, '..', '..', '..', '..', 'update', 'resources', 'app', 'app.js');
+                        const mainDest = path.join(__dirname, '..', '..', '..', '..', 'resources', 'app', 'app.js');
+                        try {
+                            fse.copySync(src, dest, { overwrite: true });
+                        } catch (err) {
+                            console.log(`Failed to copy ${src} to ${dest}`);
+                        }
+                        try {
+                            fse.copySync(packageSrc, packageDest, { overwrite: true });
+                        } catch (err) {
+                            console.log(`Failed to copy ${packageSrc} to ${packageDest}`);
+                        }
+                        try {
+                            fse.copySync(mainSrc, mainDest, { overwrite: true });
+                        } catch (err) {
+                            console.log(`Failed to copy ${mainSrc} to ${mainDest}`);
+                        }
+                        
+                        Notification.show("information", "Update complete! Restarting...");
+                        setTimeout(() => {
+                            ipcRenderer.send('restart');
+                        }, 3000);
+                    }).catch((err) => {
+                        Notification.show("error", "Failed to extract update");
+                    }).finally(() => {
+                        fs.rm(path.join(__dirname, '..', '..', '..', '..', 'update'), { recursive: true, force: true }, (err) => {
+                            if (err) {
+                                Notification.show("error", "Failed to remove temporary files");
+                            }
+                        });
+                        fs.rm(path.join(__dirname, '..', '..', '..', '..', 'temp-update'), { recursive: true, force: true }, (err) => {
+                            if (err) {
+                                Notification.show("error", "Failed to remove temporary files");
+                            }
+                        });
+                    });
+                }).catch((err) => {
+                    console.log(err);
+                    Notification.show("error", "Update download failed");
+                    busy = false;
+                });
+            } else {
+                Notification.show("information", "No updates found.");
+            }
+        }
+);
+
+function download (options) {
+    var startTime, endTime;
+    return new Promise((resolve, reject) => {
+        if (!options) reject('No options provided');
+
+        try {
+            if (!fs.existsSync(options.temp)) {
+                fs.mkdirSync(options.temp, { recursive: true });
+            }
+        } catch {
+            reject('Failed to create temp directory');
+        }
+
+        const req = fetch(options.url, { method: 'GET', encoding: null});
+        req.then((res) => {
+            startTime = new Date().getTime();
+            if (res.status !== 200) {
+                reject(`Server responded with ${res.status}: ${res.statusText}`);
+            }
+
+            const dest = fs.createWriteStream(path.join(options.temp, options.fileName));
+
+            // Write file to disk
+            res.body.on('data', (chunk) => {
+            }).pipe(dest);
+
+            res.body.on('error', (err) => {
+                fs.rm(path.join(options.temp), (err) => { });
+                reject(err);
+            });
+
+            dest.on('finish', () => {
+                endTime = new Date().getTime();
+                const timeDiff = endTime - startTime;
+                const seconds = Math.round(timeDiff / 1000);
+                const bytes = fs.statSync(path.join(options.temp, options.fileName)).size;
+                const bps = Math.round(bytes / seconds);
+                const kbps = Math.round(bps / 1024);
+                const mbps = Math.round(kbps / 1024);
+                // Check if mbps is infinity
+                if (mbps == Infinity) {
+                    Notification.show('information', `Download finished in ${seconds} seconds`);
+                    resolve();
+                } else {
+                    Notification.show('information', `Download finished in ${seconds} seconds (${mbps} MB/s)`);
+                    resolve();
+                }
+            });
+
+            dest.on('error', (err) => {
+                reject(err);
+            });
+        }).catch((err) => {
+            reject(err);
+        });
+    });
+}

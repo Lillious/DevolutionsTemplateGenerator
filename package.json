@@ -24,6 +24,10 @@
     "nconf": "^0.12.0",
     "node-clipboardy": "^1.0.3",
     "rimraf": "^5.0.1",
-    "uglifyjs-folder": "^3.3.0"
+    "uglifyjs-folder": "^3.3.0",
+    "windows-shortcuts": "^0.1.6",
+    "extract-zip": "^2.0.1",
+    "fs-extra": "^11.1.1",
+    "node-fetch": "^2.6.11"
   }
 }

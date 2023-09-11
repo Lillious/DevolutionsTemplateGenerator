@@ -1,4 +1,8 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
+const fs = require('node:fs');
+const path = require('node:path');
+const os = require('node:os');
+const ws = require('windows-shortcuts');
 const nconf = require('nconf');
 const crash = (err) => { console.error(`\x1b[31m${err}\x1b[0m`); process.exit(1); };
 // Check if config file exists
@@ -6,6 +10,34 @@ if (!require('fs').existsSync(`${__dirname}/src/www/config.json`)) {
     // Create config file with empty object
     require('fs').writeFileSync(`${__dirname}/src/www/config.json`, '{}');
 }
+
+if (!fs.existsSync(path.join(__dirname, 'settings.json'))) {
+    fs.writeFileSync(path.join(__dirname, 'settings.json'),
+        JSON.stringify({
+            DesktopShortcutPlaced: false
+        }, null, 4));
+}
+
+const configFile = fs.readFileSync(path.join(__dirname, 'settings.json'), 'utf8');
+const data = JSON.parse(configFile);
+
+if (data.DesktopShortcutPlaced === false) {
+    if (fs.existsSync(path.join(os.homedir(), "Desktop", "Devolutions Template Generator.lnk"))) {
+        fs.unlinkSync(path.join(os.homedir(), "Desktop", "Devolutions Template Generator.lnk"));
+    }
+    ws.create(path.join(os.homedir(), "Desktop", "Devolutions Template Generator.lnk"), {
+        target: path.join(__dirname, "../../devolutionstemplategenerator.exe"),
+        desc: "A Devolutions CSV password template generator designed by Logan Brown",
+        icon: path.join(__dirname, "../../resources/app/src/www/img/icon.ico"),
+        admin: false,
+        workingDir: path.join(__dirname, "../../"),
+    }, (err) => {
+        if (err) console.log(err);
+    });
+    data.DesktopShortcutPlaced = true;
+}
+
+fs.writeFileSync(path.join(__dirname, 'settings.json'), JSON.stringify(data, null, 4));
 
 ipcMain.on('save', (event, Accounts, SiteInformation) => {
     nconf.use('file', { file: `${__dirname}/src/www/config.json` });
@@ -58,6 +90,7 @@ const createWindow = () => {
             contextIsolation: false,
             sandbox: false,
             spellcheck: false,
+            ELECTRON_DISABLE_SECURITY_WARNINGS: true,
         }
     });
     win.loadFile('./src/www/index.html')
@@ -78,6 +111,11 @@ app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
         app.quit();
     }
+});
+
+ipcMain.on('restart', () => {
+    app.relaunch();
+    app.exit();
 });
 
 ipcMain.on('close', () => {

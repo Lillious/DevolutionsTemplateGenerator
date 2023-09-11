@@ -324,29 +324,27 @@ button {
 
 .notification-bar {
     position: fixed;
-    display: none;
-    right: 25px;
+    right: 5px;
     top: 55px;
-    background: rgba(0, 0, 0, 0.2);
     border-right: 4px solid #238636;
     height: 35px;
+    background: rgba(24, 31, 39, 1);
+    z-index: 1000;
 }
-
 .notification-bar .notification-content {
-    color: #c7cfd7;
-    padding: 8px;
-    margin-right: 25px;
+    color: #dcdcdc;
+    padding: 7px;
+    margin-right: 5px;
     margin-left: 5px;
 }
-
 .notification-bar .notification-close {
-    color: #c7cfd7;
+    color: #dcdcdc;
     position: absolute;
     padding: 8px;
     right: 5px;
+    -webkit-user-select: none;
     user-select: none;
 }
-
 .notification-bar .notification-close:hover {
     color: #ed6a5e;
     cursor: pointer;
