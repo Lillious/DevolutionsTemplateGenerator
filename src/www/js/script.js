@@ -5,7 +5,6 @@ const fs = require('node:fs');
 const fse = require('fs-extra');
 const fetch = require('node-fetch');
 const extract = require('extract-zip');
-const { exec } = require('child_process');
 const path = require('node:path');
 
 function formatDate () {
