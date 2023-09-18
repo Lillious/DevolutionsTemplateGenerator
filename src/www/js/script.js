@@ -552,7 +552,7 @@ exportCSV.addEventListener('mouseout', () => {
 });
 
 // Read package.json to get version
-const package = JSON.parse(fs.readFileSync('../../../package.json', 'utf8'));
+const package = JSON.parse(path.join(__dirname, '../../../app/package.json'), 'utf8');
 const version = package.version;
 document.getElementById('version').innerHTML = `v${version}`;
 
