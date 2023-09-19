@@ -92,7 +92,9 @@ save.addEventListener('click', () => {
     for (let i = 0; i < count; i++) {
         let username = usernames[i].value;
         let password = passwords[i].value;
-        Accounts.push({[username]: `${password}`});
+        if (username && password) {
+            Accounts.push({[username]: `${password}`});
+        }
     }
     let siteName = document.getElementsByClassName(`site-name`)[0].getElementsByTagName('input')[0].value || '';
     let accountNumber = document.getElementsByClassName(`account-number`)[0].getElementsByTagName('input')[0].value || '';
@@ -491,64 +493,78 @@ const tooltip = document.getElementById('tooltip');
 save.addEventListener('mouseover', () => {
     tooltip.style.opacity = '1';
     tooltip.innerHTML = 'Save to the configuration file manually';
+    tooltip.style.zIndex = '1000';
 });
 
 save.addEventListener('mouseout', () => {
     tooltip.style.opacity = '0';
+    tooltip.style.zIndex = '-1';
 });
 
 clear.addEventListener('mouseover', () => {
     tooltip.style.opacity = '1';
     tooltip.innerHTML = 'Clear the configuration file and reset the page';
+    tooltip.style.zIndex = '1000';
 });
 
 clear.addEventListener('mouseout', () => {
     tooltip.style.opacity = '0';
+    tooltip.style.zIndex = '-1';
 });
 
 importConfig.addEventListener('mouseover', () => {
     tooltip.style.opacity = '1';
     tooltip.innerHTML = 'Import a configuration file from disk';
+    tooltip.style.zIndex = '1000';
 });
 
 importConfig.addEventListener('mouseout', () => {
     tooltip.style.opacity = '0';
+    tooltip.style.zIndex = '-1';
 });
 
 exportConfig.addEventListener('mouseover', () => {
     tooltip.style.opacity = '1';
     tooltip.innerHTML = 'Export a configuration file to disk';
+    tooltip.style.zIndex = '1000';
 });
 
 exportConfig.addEventListener('mouseout', () => {
     tooltip.style.opacity = '0';
+    tooltip.style.zIndex = '-1';
 });
 
 generatePassword.addEventListener('mouseover', () => {
     tooltip.style.opacity = '1';
     tooltip.innerHTML = 'Generate passwords for all entries with empty password fields';
+    tooltip.style.zIndex = '1000';
 });
 
 generatePassword.addEventListener('mouseout', () => {
     tooltip.style.opacity = '0';
+    tooltip.style.zIndex = '-1';
 });
 
 addEntryButton.addEventListener('mouseover', () => {
     tooltip.style.opacity = '1';
     tooltip.innerHTML = 'Add a new entry';
+    tooltip.style.zIndex = '1000';
 });
 
 addEntryButton.addEventListener('mouseout', () => {
     tooltip.style.opacity = '0';
+    tooltip.style.zIndex = '-1';
 });
 
 exportCSV.addEventListener('mouseover', () => {
     tooltip.style.opacity = '1';
     tooltip.innerHTML = 'Export all entries to a CSV file';
+    tooltip.style.zIndex = '1000';
 });
 
 exportCSV.addEventListener('mouseout', () => {
     tooltip.style.opacity = '0';
+    tooltip.style.zIndex = '-1';
 });
 
 // Read package.json to get version
@@ -556,71 +572,78 @@ const package = JSON.parse(fs.readFileSync(path.join(__dirname, '../../../app/pa
 const version = package.version;
 document.getElementById('version').innerHTML = `v${version}`;
 
+
+Update();
+
 // Check for updates
-fetch("https://api.github.com/repos/Lillious/DevolutionsTemplateGenerator/releases/latest")
-    .then(res => res.json())
-        .then(json => {
-            if (json.tag_name !== version) {
-                Notification.show("information", `Update available: ${json.tag_name}`);
-                Notification.show("information", "Downloading update...");
-                download({
-                    url: json.assets[0].browser_download_url,
-                    fileName: "update.zip",
-                    temp: "./temp-update",
-                }).then(() => {
-                    Notification.show("information", "Extracting update...");
-                    File.extract("./temp-update/update.zip", path.join(__dirname, '..', '..', '..', '..', 'update'))
-                    .then(() => {
-                        const src = path.join(__dirname, '..', '..', '..', '..', 'update', 'resources', 'app', 'src');
-                        const dest = path.join(__dirname, '..', '..', '..', '..', 'resources', 'app', 'src');
-                        const packageSrc = path.join(__dirname, '..', '..', '..', '..', 'update', 'resources', 'app', 'package.json');
-                        const packageDest = path.join(__dirname, '..', '..', '..', '..', 'resources', 'app', 'package.json');
-                        const mainSrc = path.join(__dirname, '..', '..', '..', '..', 'update', 'resources', 'app', 'app.js');
-                        const mainDest = path.join(__dirname, '..', '..', '..', '..', 'resources', 'app', 'app.js');
-                        try {
-                            fse.copySync(src, dest, { overwrite: true });
-                        } catch (err) {
-                            console.log(`Failed to copy ${src} to ${dest}`);
-                        }
-                        try {
-                            fse.copySync(packageSrc, packageDest, { overwrite: true });
-                        } catch (err) {
-                            console.log(`Failed to copy ${packageSrc} to ${packageDest}`);
-                        }
-                        try {
-                            fse.copySync(mainSrc, mainDest, { overwrite: true });
-                        } catch (err) {
-                            console.log(`Failed to copy ${mainSrc} to ${mainDest}`);
-                        }
-                        
-                        Notification.show("information", "Update complete! Restarting...");
-                        setTimeout(() => {
-                            ipcRenderer.send('restart');
-                        }, 3000);
+function Update () {
+    fetch("https://api.github.com/repos/Lillious/DevolutionsTemplateGenerator/releases/latest")
+        .then(res => res.json())
+            .then(json => {
+                if (json.tag_name !== version) {
+                    Notification.show("information", `Update available: ${json.tag_name}`);
+                    Notification.show("information", "Downloading update...");
+                    download({
+                        url: json.assets[0].browser_download_url,
+                        fileName: "update.zip",
+                        temp: "./temp-update",
+                    }).then(() => {
+                        Notification.show("information", "Extracting update...");
+                        File.extract("./temp-update/update.zip", path.join(__dirname, '..', '..', '..', '..', 'update'))
+                        .then(() => {
+                            const src = path.join(__dirname, '..', '..', '..', '..', 'update', 'resources', 'app', 'src');
+                            const dest = path.join(__dirname, '..', '..', '..', '..', 'resources', 'app', 'src');
+                            const packageSrc = path.join(__dirname, '..', '..', '..', '..', 'update', 'resources', 'app', 'package.json');
+                            const packageDest = path.join(__dirname, '..', '..', '..', '..', 'resources', 'app', 'package.json');
+                            const mainSrc = path.join(__dirname, '..', '..', '..', '..', 'update', 'resources', 'app', 'app.js');
+                            const mainDest = path.join(__dirname, '..', '..', '..', '..', 'resources', 'app', 'app.js');
+                            try {
+                                fse.copySync(src, dest, { overwrite: true });
+                            } catch (err) {
+                                console.log(`Failed to copy ${src} to ${dest}`);
+                            }
+                            try {
+                                fse.copySync(packageSrc, packageDest, { overwrite: true });
+                            } catch (err) {
+                                console.log(`Failed to copy ${packageSrc} to ${packageDest}`);
+                            }
+                            try {
+                                fse.copySync(mainSrc, mainDest, { overwrite: true });
+                            } catch (err) {
+                                console.log(`Failed to copy ${mainSrc} to ${mainDest}`);
+                            }
+                            
+                            Notification.show("information", "Update complete! Restarting...");
+                            // Save before forced update
+                            save.click();
+                            setTimeout(() => {
+                                ipcRenderer.send('restart');
+                            }, 5000);
+                        }).catch((err) => {
+                            Notification.show("error", "Failed to extract update");
+                        }).finally(() => {
+                            fs.rm(path.join(__dirname, '..', '..', '..', '..', 'update'), { recursive: true, force: true }, (err) => {
+                                if (err) {
+                                    Notification.show("error", "Failed to remove temporary files");
+                                }
+                            });
+                            fs.rm(path.join(__dirname, '..', '..', '..', '..', 'temp-update'), { recursive: true, force: true }, (err) => {
+                                if (err) {
+                                    Notification.show("error", "Failed to remove temporary files");
+                                }
+                            });
+                        });
                     }).catch((err) => {
-                        Notification.show("error", "Failed to extract update");
-                    }).finally(() => {
-                        fs.rm(path.join(__dirname, '..', '..', '..', '..', 'update'), { recursive: true, force: true }, (err) => {
-                            if (err) {
-                                Notification.show("error", "Failed to remove temporary files");
-                            }
-                        });
-                        fs.rm(path.join(__dirname, '..', '..', '..', '..', 'temp-update'), { recursive: true, force: true }, (err) => {
-                            if (err) {
-                                Notification.show("error", "Failed to remove temporary files");
-                            }
-                        });
+                        console.log(err);
+                        Notification.show("error", "Update download failed");
+                        busy = false;
                     });
-                }).catch((err) => {
-                    console.log(err);
-                    Notification.show("error", "Update download failed");
-                    busy = false;
-                });
-            } else {
-                Notification.show("information", "No updates found.");
+                } else {
+                    Notification.show("information", "No updates found.");
+                }
             }
-        }
-);
+    );
+}
 
 function download (options) {
     var startTime, endTime;
