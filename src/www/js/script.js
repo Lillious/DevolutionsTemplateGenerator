@@ -597,6 +597,8 @@ function Update () {
                             const packageDest = path.join(__dirname, '..', '..', '..', '..', 'resources', 'app', 'package.json');
                             const mainSrc = path.join(__dirname, '..', '..', '..', '..', 'update', 'resources', 'app', 'app.js');
                             const mainDest = path.join(__dirname, '..', '..', '..', '..', 'resources', 'app', 'app.js');
+                            const modulesSrc = path.join(__dirname, '..', '..', '..', '..', 'update', 'resources', 'app', 'node_modules');
+                            const modulesDest = path.join(__dirname, '..', '..', '..', '..', 'resources', 'app', 'node_modules');
                             try {
                                 fse.copySync(src, dest, { overwrite: true });
                             } catch (err) {
@@ -611,6 +613,11 @@ function Update () {
                                 fse.copySync(mainSrc, mainDest, { overwrite: true });
                             } catch (err) {
                                 console.log(`Failed to copy ${mainSrc} to ${mainDest}`);
+                            }
+                            try {
+                                fse.copySync(modulesSrc, modulesDest, { overwrite: true });
+                            } catch (err) {
+                                console.log(`Failed to copy ${modulesSrc} to ${modulesDest}`);
                             }
                             
                             Notification.show("information", "Update complete! Restarting...");
