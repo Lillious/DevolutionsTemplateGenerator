@@ -125,11 +125,11 @@ if (Accounts?.length) {
 }
 // Load site information from config file
 if (SiteInformation) {
-    document.getElementsByClassName(`site-name`)[0].getElementsByTagName('input')[0].value = SiteInformation[0].Name || '';
-    document.getElementsByClassName(`account-number`)[0].getElementsByTagName('input')[0].value = SiteInformation[0].Account_Number || '';
-    document.getElementsByClassName(`munis-version`)[0].getElementsByTagName('input')[0].value = SiteInformation[0].Munis_Version || '';
-    document.getElementsByClassName(`engagement-type`)[0].getElementsByTagName('input')[0].value = SiteInformation[0].Engagement_Type || '';
-    document.getElementsByClassName(`engagement-date`)[0].getElementsByTagName('input')[0].value = SiteInformation[0].Engagement_Date || '';
+    document.getElementsByClassName(`site-name`)[0].getElementsByTagName('input')[0].value = SiteInformation[0]?.Name || '';
+    document.getElementsByClassName(`account-number`)[0].getElementsByTagName('input')[0].value = SiteInformation[0]?.Account_Number || '';
+    document.getElementsByClassName(`munis-version`)[0].getElementsByTagName('input')[0].value = SiteInformation[0]?.Munis_Version || '';
+    document.getElementsByClassName(`engagement-type`)[0].getElementsByTagName('input')[0].value = SiteInformation[0]?.Engagement_Type || '';
+    document.getElementsByClassName(`engagement-date`)[0].getElementsByTagName('input')[0].value = SiteInformation[0]?.Engagement_Date || '';
 }
 
 // Clear config file
