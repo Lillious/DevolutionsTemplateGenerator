@@ -131,3 +131,4 @@ dist
 
 release/
 src/www/config.json
+settings.json

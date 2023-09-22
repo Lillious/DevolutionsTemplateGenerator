@@ -283,6 +283,7 @@ button {
     border: 1px solid #22282e;
     padding: 25px;
     margin-left: 10px;
+    margin-right: 10px;
     overflow: hidden;
     max-height: 0px;
     margin-bottom: 10px;
